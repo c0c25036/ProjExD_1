@@ -20,6 +20,27 @@ def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
     if rct.top < 0 or rct.bottom > HEIGHT:
         tate = False
     return yoko,tate
+ 
+def gameover(screen: pg.Surface) -> None:
+    """ゲームオーバー画面を表示する"""
+    black_surf = pg.Surface((WIDTH, HEIGHT))
+    black_surf.fill((0, 0, 0))
+    black_surf.set_alpha(200)
+
+    font = pg.font.Font(None, 100)
+    text = font.render("Game Over", True, (255, 255, 255))
+    text_rct = text.get_rect(center=(WIDTH//2, HEIGHT//2 - 50))
+
+    cry_img = pg.transform.rotozoom(pg.image.load("fig/8.png"), 0, 1.0)
+    cry_rct = cry_img.get_rect(center=(WIDTH//2, HEIGHT//2 + 100))
+
+    screen.blit(black_surf, (0, 0))
+    screen.blit(text, text_rct)
+    screen.blit(cry_img, cry_rct)
+    pg.display.update()
+
+    pg.time.wait(5000)
+
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -77,6 +98,7 @@ def main():
         if not tate:
             vy *= -1
         if kk_rct.colliderect(bb_rct):
+            gameover(screen)
             return
         screen.blit(kk_img, kk_rct)
         screen.blit(bb_img, bb_rct)
