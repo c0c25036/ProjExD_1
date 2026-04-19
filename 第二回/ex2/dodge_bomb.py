@@ -12,6 +12,14 @@ DELTA = {
     pg.K_LEFT:  (-5, 0),
     pg.K_RIGHT: (+5, 0),
 }
+def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
+    yoko = True
+    tate = True
+    if rct.left < 0 or rct.right > WIDTH:
+        yoko = False
+    if rct.top < 0 or rct.bottom > HEIGHT:
+        tate = False
+    return yoko,tate
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -42,13 +50,22 @@ def main():
         # DELTA辞書を使った移動
         key_lst = pg.key.get_pressed()
         sum_mv = [0, 0]
+        
         for key, mv in DELTA.items():
             if key_lst[key]:
                 sum_mv[0] += mv[0]
                 sum_mv[1] += mv[1]
 
-        kk_rct.move_ip(sum_mv)  
+        kk_rct.move_ip(sum_mv)
+        old_rct = kk_rct.copy()
+        if not all(check_bound(kk_rct)):
+            kk_rct = old_rct  
         bb_rct.move_ip(vx, vy)
+        yoko, tate = check_bound(bb_rct)
+        if not yoko:
+            vx *= -1
+        if not tate:
+            vy *= -1
         screen.blit(kk_img, kk_rct)
         screen.blit(bb_img, bb_rct)
         pg.display.update()
