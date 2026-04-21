@@ -13,6 +13,11 @@ DELTA = {
     pg.K_RIGHT: (+5, 0),
 }
 def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
+    """
+        Rect が画面内に収まっているか判定する関数
+        戻り値: (横がOKか, 縦がOKか)
+    """
+
     yoko = True
     tate = True
     if rct.left < 0 or rct.right > WIDTH:
