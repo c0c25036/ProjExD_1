@@ -69,13 +69,13 @@ def main():
     kk_rct.center = 300, 200
     bb_imgs, bb_accs = init_bb_imgs()
 
+    img03 = pg.image.load("fig/3.png")
     kk_imgs = {
-    (0, -5): pg.transform.rotozoom(pg.image.load("fig/3.png"), 90, 0.9),
-    (0, +5): pg.transform.rotozoom(pg.image.load("fig/3.png"), -90, 0.9),
-    (-5, 0): pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 0.9),
-    (+5, 0): pg.transform.rotozoom(pg.image.load("fig/3.png"), 180, 0.9),
+    (0, -5): pg.transform.rotozoom(img03, 90, 0.9),
+    (0, +5): pg.transform.rotozoom(img03, -90, 0.9),
+    (-5, 0): pg.transform.rotozoom(img03, 0, 0.9),
+    (+5, 0): pg.transform.rotozoom(img03, 180, 0.9),
 }
-
     bb_img = pg.Surface((20, 20))
     bb_img.set_colorkey((0, 0, 0))
     pg.draw.circle(bb_img, (255, 0, 0), (10, 10), 10)
