@@ -182,6 +182,37 @@ class Score:
     def update(self, screen: pg.Surface):
         self.img = self.fonto.render(f"Score: {self.value}", True, self.color)
         screen.blit(self.img, self.rct)
+class Explosion:
+    def __init__(self, center: tuple[int, int]):
+        # 爆発画像（元画像）
+        img0 = pg.image.load("fig/explosion.gif")
+
+        # 上下左右に flip した画像を作る
+        img1 = pg.transform.flip(img0, True, False)   # 左右反転
+        img2 = pg.transform.flip(img0, False, True)   # 上下反転
+        img3 = pg.transform.flip(img1, False, True)   # 上下左右反転
+
+        # Surface をリストに格納
+        self.imgs = [img0, img1, img2, img3]
+
+        # 爆発位置
+        self.rct = self.imgs[0].get_rect()
+        self.rct.center = center
+
+        # 爆発の寿命
+        self.life = 20   # 20フレーム表示（調整可）
+
+    def update(self, screen: pg.Surface):
+        # life が 0 なら何もしない
+        if self.life <= 0:
+            return
+
+        # 画像を交互に切り替える
+        img = self.imgs[self.life % 4]
+        screen.blit(img, self.rct)
+
+        # 寿命を減らす
+        self.life -= 1
 
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
@@ -191,6 +222,7 @@ def main():
     score = Score()
     bombs = [Bomb((255, 0, 0), 10) for _ in range(NUM_OF_BOMBS)]
     beams = []  # ゲーム初期化時にはビームは存在しない
+    explosions = []
     clock = pg.time.Clock()
     tmr = 0
 
@@ -202,8 +234,6 @@ def main():
                 beams.append(Beam(bird))
 
         screen.blit(bg_img, [0, 0])
-
-    
 
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
@@ -223,24 +253,33 @@ def main():
         # --- 練習3：ビームが爆弾に当たったときの処理 ---
         for bi, beam in enumerate(beams):
             for bo, bomb in enumerate(bombs):
-                 if beam.rct.colliderect(bomb.rct):
+                if beam is None or bomb is None:
+                    continue
+                if beam.rct.colliderect(bomb.rct):
                     bird.change_img(6, screen)
+                    explosions.append(Explosion(bomb.rct.center))  
                     bombs[bo] = None
                     beams[bi] = None
                     score.value += 1   # スコア機能がある場合
                     break
+                    
+                 
         bombs = [b for b in bombs if b is not None]
         beams = [b for b in beams if b is not None]
         # --- 爆弾の update ---
         for bomb in bombs:
             bomb.update(screen)
-
-
         # --- ビームの update ---
         for beam in beams:
             beam.update(screen)
-            
-        bombs = [b for b in bombs if b is not None]
+
+        # --- Explosion update ---
+        for ex in explosions:
+            ex.update(screen)
+
+        # life が残っているものだけ残す
+        explosions = [ex for ex in explosions if ex.life > 0]
+
         score.update(screen)
         pg.display.update()
         clock.tick(50)
