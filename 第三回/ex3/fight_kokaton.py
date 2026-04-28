@@ -114,9 +114,6 @@ class Beam:
 
         screen.blit(self.img, self.rct)
         return True
-
-
-
 # ビームクラス:
     # """
     # こうかとんが放つビームに関するクラス
@@ -140,8 +137,6 @@ class Beam:
     #     if check_bound(self.rct) == (True, True):
     #         self.rct.move_ip(self.vx, self.vy)
     #         screen.blit(self.img, self.rct)    
-
-
 class Bomb:
     """
     爆弾に関するクラス
@@ -266,8 +261,6 @@ def main():
                     beams[bi] = None
                     score.value += 1   # スコア機能がある場合
                     break
-                    
-
         bombs = [b for b in bombs if b is not None]
         beams = [b for b in beams if b is not None]
         # --- 爆弾の update ---
@@ -279,8 +272,6 @@ def main():
             if beam.update(screen):   # True → 画面内、False → 画面外
                 new_beams.append(beam)
         beams = new_beams
-
-
         # --- Explosion update ---
         for ex in explosions:
             ex.update(screen)
